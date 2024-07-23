@@ -1,39 +1,159 @@
-function calculateFinance() {
-  const carPrice = parseFloat(document.getElementById("car-price").value);
-  const downPayment = parseFloat(document.getElementById("down-payment").value);
-  const finalPaymentPercentage = parseFloat(
-    document.getElementById("final-payment").value
-  );
-  const profitMargin = parseFloat(
-    document.getElementById("profit-margin").value
-  );
-  const insurance = parseFloat(document.getElementById("insurance").value);
-  const adminFees = parseFloat(document.getElementById("admin-fees").value);
-  const period = parseFloat(document.getElementById("period").value);
-  const markup = parseFloat(document.getElementById("markup").value);
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة تمويل السيارات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+        }
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .results-table, .results-table th, .results-table td {
+            border: 1px solid #000;
+        }
+        .results-table th, .results-table td {
+            padding: 10px;
+            text-align: center;
+        }
+        .highlight {
+            background-color: #FFFF00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>حاسبة تمويل السيارات</h1>
+        <form id="finance-form">
+            <div class="form-group">
+                <label for="car-price">سعر السيارة (شاملاً ضريبة القيمة المضافة)</label>
+                <input type="number" id="car-price" value="49000" required>
+            </div>
+            <div class="form-group">
+                <label for="down-payment">الدفعة الأولى</label>
+                <input type="number" id="down-payment" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="final-payment">نسبة الدفعة الأخيرة</label>
+                <input type="number" id="final-payment" value="0.35" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="profit-margin">هامش الربح</label>
+                <input type="number" id="profit-margin" value="5.75" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="insurance">التأمين</label>
+                <input type="number" id="insurance" value="3" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="admin-fees">الرسوم الإدارية</label>
+                <input type="number" id="admin-fees" value="1" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="period">المدة (بالسنوات)</label>
+                <input type="number" id="period" value="5" required>
+            </div>
+            <div class="form-group">
+                <label for="markup">Markup</label>
+                <input type="number" id="markup" value="8.75" step="0.01" required>
+            </div>
+            <button type="button" onclick="calculateFinance()">احسب</button>
+        </form>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>نوع الترخيص</th>
+                    <th>تجاري</th>
+                    <th>القسط الشهري</th>
+                    <th>DP + Admin Fees + Gov. Fees</th>
+                    <th>التكلفة النهائية</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="highlight">تجاري</td>
+                    <td id="car-price-display"></td>
+                    <td id="monthly-payment"></td>
+                    <td id="dp-plus-fees"></td>
+                    <td id="total-cost"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function calculateFinance() {
+            const carPrice = parseFloat(document.getElementById('car-price').value);
+            const downPayment = parseFloat(document.getElementById('down-payment').value);
+            const finalPaymentPercentage = parseFloat(document.getElementById('final-payment').value);
+            const profitMargin = parseFloat(document.getElementById('profit-margin').value);
+            const insurance = parseFloat(document.getElementById('insurance').value);
+            const adminFees = parseFloat(document.getElementById('admin-fees').value);
+            const period = parseFloat(document.getElementById('period').value);
+            const markup = parseFloat(document.getElementById('markup').value);
 
-  // Calculate the values
-  const finalPayment = carPrice * finalPaymentPercentage;
-  const insuranceCost = carPrice * (insurance / 100);
-  const adminFeesCost = carPrice * (adminFees / 100);
-  const totalProfit = carPrice * (profitMargin / 100);
-  const dpPlusFees = downPayment + adminFeesCost + insuranceCost;
-  const principal = carPrice - downPayment - finalPayment;
-  const totalInterest = principal * (markup / 100) * period;
-  const monthlyPayment = (principal + totalInterest) / (period * 12);
-  const totalCost = dpPlusFees + finalPayment + monthlyPayment * period * 12;
+            // Calculate the values
+            const finalPayment = carPrice * finalPaymentPercentage;
+            const insuranceCost = carPrice * (insurance / 100);
+            const adminFeesCost = carPrice * (adminFees / 100);
+            const totalProfit = carPrice * (profitMargin / 100);
+            const dpPlusFees = downPayment + adminFeesCost + insuranceCost;
+            const principal = carPrice - downPayment - finalPayment;
+            const totalInterest = principal * (markup / 100) * period;
+            const monthlyPayment = (principal + totalInterest) / (period * 12);
+            const totalCost = dpPlusFees + finalPayment + (monthlyPayment * period * 12);
 
-  // Display the results
-  document.getElementById("car-price-display").innerText = `${carPrice.toFixed(
-    2
-  )} ريال`;
-  document.getElementById("dp-plus-fees").innerText = `${dpPlusFees.toFixed(
-    2
-  )} ريال`;
-  document.getElementById(
-    "monthly-payment"
-  ).innerText = `${monthlyPayment.toFixed(2)} ريال`;
-  document.getElementById("total-cost").innerText = `${totalCost.toFixed(
-    2
-  )} ريال`;
-}
+            // Display the results
+            document.getElementById('car-price-display').innerText = `${carPrice.toFixed(2)} ريال`;
+            document.getElementById('dp-plus-fees').innerText = `${dpPlusFees.toFixed(2)} ريال`;
+            document.getElementById('monthly-payment').innerText = `${monthlyPayment.toFixed(2)} ريال`;
+            document.getElementById('total-cost').innerText = `${totalCost.toFixed(2)} ريال`;
+        }
+    </script>
+</body>
+</html>
